@@ -1,144 +1,116 @@
 import gradio as gr
 from ultralytics import YOLO
 
-# Load YOLO model
+# Load trained model
 model = YOLO("best.pt")
 
-
-# Weed detection function
 def detect_weeds(image):
 
     results = model(image)
-
     result_img = results[0].plot()
 
     boxes = results[0].boxes
     weed_count = len(boxes)
 
-    # spraying recommendation
     spray_level = min(10, weed_count + 1)
 
     return result_img, weed_count, spray_level
 
 
-with gr.Blocks(title="Dridha-Agri AI Platform") as demo:
-
-    # --------------------------------------------------
-    # PROJECT INTRO
-    # --------------------------------------------------
+with gr.Blocks(title="Dridha-Agri AI System") as demo:
 
     gr.Markdown(
     """
-# 🌱 Dridha-Agri – AI Platform for Smart Agriculture
+# 🌱 Dridha-Agri – AI-powered Weed Detection System for Precision Agriculture
 
-**Dridha-Agri** is an AI-powered agricultural monitoring platform that uses  
-**drone imagery and computer vision** to support **precision agriculture**.
-
-The system integrates:
-
-• 🌿 **Weed detection using YOLO object detection**  
-• 🍃 **Plant disease monitoring research**  
-• ☁️ **Automatic cloud synchronization of field images**  
-• 💧 **Variable rate precision spraying recommendations**
-
-This platform helps farmers **identify crop issues early**,  
-**reduce chemical usage**, and **improve crop productivity**.
+From drone imagery to precision spray prescriptions – reducing chemicals, cost, and crop stress using AI.
 """
     )
 
     # --------------------------------------------------
-    # MODEL OVERVIEW
+    # OVERVIEW + MODEL PERFORMANCE
     # --------------------------------------------------
 
-    with gr.Tab("📊 Model Overview"):
+    with gr.Tab("AI Model Performance"):
 
         gr.Markdown(
         """
-## AI Model
+## Project Overview
 
-**Architecture:** YOLO Object Detection Model
+Dridha-Agri is an AI-based agricultural monitoring system designed to support **precision farming using drone imagery and computer vision**.
 
-The model analyzes aerial drone images and detects **weed clusters in crop fields**.
+The system analyzes aerial field images and identifies weed-affected regions so that farmers can apply targeted treatment instead of spraying chemicals across the entire field.
 
-### Dataset
+### Key Capabilities
 
-Total Images: **3295 annotated agricultural images**
+• Automated weed detection using YOLO object detection  
+• Drone-based crop monitoring  
+• Geospatially aware detection outputs  
+• Precision spraying recommendations  
+• Reduced chemical usage and improved crop health
 
-Dataset Split
 
-Train: 85%  
-Validation: 10%  
-Test: 5%
+---
 
-### Crops Included
+## YOLOv11 Model – Performance Summary
+
+**Model:** YOLOv11 (Small)  
+**Task:** Weed Detection from Drone Imagery  
+
+**Crops Covered**
 
 • Paddy  
 • Cotton  
 • Sugarcane  
-• Groundnut
+• Groundnut  
 
-Images include **drone aerial imagery and field images collected during crop monitoring**.
+**Dataset**
+
+3295 annotated images  
+(85% train, 10% validation, 5% test)
+
+**Training**
+
+96 epochs with data augmentation.
+
+**Objective**
+
+Accurate weed localization to enable **precision spraying in agricultural fields**.
 """
         )
 
     # --------------------------------------------------
-    # MODEL PERFORMANCE
+    # RESULT CURVES
     # --------------------------------------------------
 
-    with gr.Tab("📈 Model Performance"):
+    with gr.Tab("Result Curves"):
 
-        gr.Markdown(
-        """
-## Evaluation Metrics
-
-| Metric | Score |
-|------|------|
-| Precision | 90.88% |
-| Recall | 85.84% |
-| mAP@0.5 | 88.45% |
-| mAP@0.5:0.95 | 63.27% |
-
-These results indicate reliable detection of weed clusters in agricultural environments.
-"""
-        )
-
-    # --------------------------------------------------
-    # TRAINING RESULTS CURVE
-    # --------------------------------------------------
-
-    with gr.Tab("📉 Training Results"):
-
-        gr.Markdown("## YOLO Training Curve")
+        gr.Markdown("## Training Performance Curves")
 
         gr.Image(
             value="results.png",
-            label="Training Results"
+            label="YOLO Training Results"
         )
 
         gr.Markdown(
         """
-The training curve shows:
+These curves show:
 
-• Precision improvement  
-• Recall progression  
-• mAP performance  
-• Loss convergence
+• Training and validation loss  
+• Precision and recall progression  
+• mAP performance improvement during training  
 
-These curves demonstrate stable training and model convergence.
+The curves demonstrate stable model convergence.
 """
         )
 
     # --------------------------------------------------
-    # LIVE WEED DETECTION
+    # LIVE DETECTION
     # --------------------------------------------------
 
-    with gr.Tab("🌿 Live Weed Detection"):
+    with gr.Tab("Live Weed Detection"):
 
-        gr.Markdown(
-        """
-Upload a **field image** and the AI model will detect weed regions.
-"""
-        )
+        gr.Markdown("## Upload Image")
 
         image_input = gr.Image(type="numpy", label="Upload Field Image")
 
@@ -157,27 +129,32 @@ Upload a **field image** and the AI model will detect weed regions.
         )
 
     # --------------------------------------------------
-    # CLOUD SYNCHRONIZATION
+    # SYSTEM WORKFLOW
     # --------------------------------------------------
 
-    with gr.Tab("☁️ Cloud Synchronization"):
+    with gr.Tab("System Workflow"):
 
         gr.Markdown(
         """
-## Cloud-Based Monitoring System
+## System Workflow
 
-Images captured by drones or field cameras automatically synchronize to a **cloud platform**.
+The Dridha-Agri system integrates **drone technology, cloud infrastructure, and AI models** for automated crop monitoring.
 
-### Pipeline
+1️⃣ Drone missions are planned and executed over agricultural fields.
 
-Drone Capture → Cloud Upload → AI Analysis → Farmer Dashboard
+2️⃣ During flight, high-resolution aerial images of the crop field are captured.
 
-### Benefits
+3️⃣ Captured images are automatically synchronized to cloud storage along with geo-referenced metadata.
 
-• Remote farm monitoring  
-• Large-scale agricultural data storage  
-• Real-time AI analysis  
-• Historical crop monitoring
+4️⃣ The uploaded images are processed by the AI weed detection model.
+
+5️⃣ The model analyzes the images and identifies weed clusters within crop regions.
+
+6️⃣ Detected weed locations are translated into geospatial outputs.
+
+7️⃣ These outputs can be used to guide precision spraying operations.
+
+This pipeline enables **large-scale crop monitoring and data-driven agricultural decision making**.
 """
         )
 
@@ -185,57 +162,59 @@ Drone Capture → Cloud Upload → AI Analysis → Farmer Dashboard
     # VARIABLE RATE SPRAYING
     # --------------------------------------------------
 
-    with gr.Tab("💧 Variable Rate Spraying"):
+    with gr.Tab("Variable Rate Spraying"):
 
         gr.Markdown(
         """
 ## Precision Spraying Strategy
 
-Using weed detection results, the system calculates **spray recommendations**.
+Instead of spraying chemicals across the entire field, Dridha-Agri recommends **variable rate spraying based on weed density**.
 
-| Weed Density | Spray Level |
-|--------------|------------|
-| Low | 1-3 |
-| Medium | 4-7 |
-| High | 8-10 |
+### Spray Recommendation Scale
 
-Instead of spraying chemicals across the entire field,  
-**Variable Rate Spraying (VRS)** applies chemicals **only where weeds are detected**.
+Low Weed Density → Spray Level 1–3  
+Medium Weed Density → Spray Level 4–7  
+High Weed Density → Spray Level 8–10  
 
 ### Benefits
 
 • Reduce pesticide usage  
-• Lower farming costs  
-• Protect soil health  
-• Improve sustainability
+• Lower operational cost  
+• Protect soil and environment  
+• Improve crop productivity
 """
         )
 
     # --------------------------------------------------
-    # PROJECT IMPACT
+    # CONCLUSION
     # --------------------------------------------------
 
-    with gr.Tab("✅ Project Impact"):
+    with gr.Tab("Conclusion"):
 
         gr.Markdown(
         """
-## Project Achievements
+## Conclusion
 
-✔ Custom YOLO weed detection model  
-✔ Trained on agricultural drone imagery dataset  
-✔ Achieved **88% mAP detection accuracy**  
-✔ Built an **interactive AI detection interface**  
-✔ Designed **cloud-based agricultural monitoring pipeline**  
-✔ Implemented **precision spraying recommendations**
+Dridha-Agri demonstrates how AI can directly support precision agriculture.
 
-## Impact
+In this project, we successfully:
 
-Dridha-Agri combines:
+• Trained a custom YOLOv11 model for weed detection from drone imagery  
+• Achieved ~88% mAP@0.5 ensuring accurate weed localization  
+• Enabled real-time inference suitable for field deployment  
+• Translated detection outputs into a **variable rate spraying scale**
 
-**Artificial Intelligence + Drone Imagery + Cloud Computing + Precision Agriculture**
+This approach reduces unnecessary chemical usage while improving crop health.
 
-to help farmers detect weed infestations early and apply **targeted treatments instead of blanket chemical spraying**.
+### Key Takeaways
+
+✔ AI-driven weed detection is feasible in real agricultural conditions  
+✔ Precision spraying can reduce chemical usage significantly  
+✔ Simple, interpretable outputs improve real-world usability  
+
+Dridha-Agri bridges the gap between **computer vision research and practical agricultural solutions**.
 """
         )
+
 
 demo.launch()
